@@ -1,0 +1,66 @@
+name: movies
+version: '3.8'
+
+services:
+  gateway:
+    build:
+      context: .
+      args:
+        - SERVICE=gateway
+    restart: unless-stopped
+    profiles: [all, gateway, content, users, recommendations, reviews]
+    ports:
+        - "9000:8080"
+    networks: [movies]
+
+  content:
+    build:
+      context: .
+      args:
+        - SERVICE=content
+    restart: unless-stopped
+    profiles: [all, content]
+    depends_on: [gateway]
+    ports:
+      - "9001:8080"
+    networks: [movies]
+
+  users:
+    build:
+      context: .
+      args:
+        - SERVICE=users
+    restart: unless-stopped
+    profiles: [all, users]
+    depends_on: [gateway]
+    ports:
+        - "9002:8080"
+    networks: [movies]
+
+  recommendations:
+    build:
+      context: .
+      args:
+        - SERVICE=recommendations
+    restart: unless-stopped
+    profiles: [all, recommendations]
+    depends_on: [gateway]
+    ports:
+      - "9003:8080"
+    networks: [movies]
+
+  reviews:
+    build:
+      context: .
+      args:
+        - SERVICE=reviews
+    restart: unless-stopped
+    profiles: [all, reviews]
+    depends_on: [gateway]
+    ports:
+      - "9004:8080"
+    networks: [movies]
+
+networks:
+  movies:
+    driver: bridge
