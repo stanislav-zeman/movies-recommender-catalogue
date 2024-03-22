@@ -29,7 +29,6 @@ build:
   script:
     - "mvn compile"
 
-
 test:
   stage: test
   tags:
