@@ -10,5 +10,5 @@ The web application is a catalogue of movies of different genres. Each movie has
 
 - [Stanislav Zeman](https://is.muni.cz/auth/osoba/524881)
 - [Martin Ragan](https://is.muni.cz/auth/osoba/524712)
-- [Boris Savov](https://is.muni.cz/auth/osoba/524847)
 - [Štefan Šidlovský](https://is.muni.cz/auth/osoba/514508)
+- [~~Boris Savov~~](https://is.muni.cz/auth/osoba/524847)
