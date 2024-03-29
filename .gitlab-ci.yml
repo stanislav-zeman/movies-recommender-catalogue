@@ -21,6 +21,22 @@ validate:
   script:
     - "mvn validate"
 
+format:
+  stage: validate
+  tags:
+    - shared-fi
+
+  script:
+    - "mvn spotless:check"
+
+lint:
+  stage: validate
+  tags:
+    - shared-fi
+
+  script:
+    - "mvn spotbugs:check"
+
 build:
   stage: build
   tags:
