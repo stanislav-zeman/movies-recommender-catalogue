@@ -43,15 +43,75 @@ lint:
   script:
     - "mvn spotbugs:check"
 
-build:
+build-gateway:
   stage: build
   tags:
     - shared-fi
 
   script:
-    - "mvn compile"
+    - "mvn compile --projects dev.cere:gateway"
 
-reviews:
+build-content:
+  stage: build
+  tags:
+    - shared-fi
+
+  script:
+    - "mvn compile --projects dev.cere:content"
+
+build-recommendations:
+  stage: build
+  tags:
+    - shared-fi
+
+  script:
+    - "mvn compile --projects dev.cere:recommendations"
+
+build-reviews:
+  stage: build
+  tags:
+    - shared-fi
+
+  script:
+    - "mvn compile --projects dev.cere:reviews"
+
+test-gateway:
+  stage: test
+  tags:
+    - shared-fi
+
+  script:
+    - "mvn test --projects dev.cere:gateway"
+
+test-content:
+  stage: test
+  tags:
+    - shared-fi
+  services:
+    - name: postgres:16
+      alias: postgres-content
+      variables:
+        POSTGRES_DB: content
+        PGPORT: 54321
+
+  script:
+    - "mvn test --projects dev.cere:content"
+
+test-recommendations:
+  stage: test
+  tags:
+    - shared-fi
+  services:
+    - name: postgres:16
+      alias: postgres-recommendations
+      variables:
+        POSTGRES_DB: recommendations
+        PGPORT: 54323
+
+  script:
+    - "mvn test --projects dev.cere:recommendations"
+
+test-reviews:
   stage: test
   tags:
     - shared-fi
