@@ -1,0 +1,19 @@
+server:
+  address: localhost
+  port: 9000
+
+spring:
+  application:
+    name: gateway
+  main:
+    web-application-type: reactive
+
+services:
+  content:
+    uri: http://localhost:9001
+  users:
+    uri: http://localhost:9002
+  recommendations:
+    uri: http://localhost:9003
+  reviews:
+    uri: http://localhost:9004

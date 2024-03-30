@@ -3,7 +3,7 @@ package dev.cere.gateway;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = GatewayApplication.class)
 class GatewayApplicationTests {
 
     @Test

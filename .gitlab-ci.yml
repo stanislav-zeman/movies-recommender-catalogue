@@ -1,7 +1,13 @@
 variables:
   MAVEN_OPTS: -Dmaven.repo.local=.m2/repository
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
 
 image: maven:latest
+
+services:
+  - name: rabbitmq:3
+    alias: rabbit
 
 stages:
   - validate
@@ -45,10 +51,16 @@ build:
   script:
     - "mvn compile"
 
-test:
+reviews:
   stage: test
   tags:
     - shared-fi
+  services:
+    - name: postgres:16
+      alias: postgres-reviews
+      variables:
+        POSTGRES_DB: reviews
+        PGPORT: 54324
 
   script:
-    - "mvn test"
+    - "mvn test --projects dev.cere:reviews"

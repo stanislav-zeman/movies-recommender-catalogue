@@ -13,7 +13,7 @@ spring:
       ddl-auto: create
     generate-ddl: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/reviews
+    url: jdbc:postgresql://postgres-reviews:54324/reviews
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
