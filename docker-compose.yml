@@ -61,6 +61,18 @@ services:
       - "9004:8080"
     networks: [movies]
 
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    profiles: [all, dependencies]
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: reviews
+    ports:
+      - "5432:5432"
+    networks: [movies]
+
 networks:
   movies:
     driver: bridge

@@ -1,0 +1,19 @@
+server:
+  address: localhost
+  port: 9004
+
+spring:
+  application:
+    name: reviews
+  jpa:
+    database: postgresql
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/reviews
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
