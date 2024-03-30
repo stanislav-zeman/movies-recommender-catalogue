@@ -20,7 +20,7 @@ services:
         - SERVICE=content
     restart: unless-stopped
     profiles: [all, content]
-    depends_on: [gateway]
+    depends_on: [gateway, rabbit]
     ports:
       - "9001:8080"
     networks: [movies]
@@ -32,7 +32,7 @@ services:
         - SERVICE=users
     restart: unless-stopped
     profiles: [all, users]
-    depends_on: [gateway]
+    depends_on: [gateway, rabbit]
     ports:
         - "9002:8080"
     networks: [movies]
@@ -44,7 +44,7 @@ services:
         - SERVICE=recommendations
     restart: unless-stopped
     profiles: [all, recommendations]
-    depends_on: [gateway]
+    depends_on: [gateway, rabbit]
     ports:
       - "9003:8080"
     networks: [movies]
@@ -56,7 +56,7 @@ services:
         - SERVICE=reviews
     restart: unless-stopped
     profiles: [all, reviews]
-    depends_on: [gateway]
+    depends_on: [gateway, rabbit]
     ports:
       - "9004:8080"
     networks: [movies]
@@ -71,6 +71,19 @@ services:
       POSTGRES_DB: reviews
     ports:
       - "5432:5432"
+
+  rabbit:
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    hostname: cere.dev
+    environment:
+      RABBITMQ_DEFAULT_USER: playboy
+      RABBITMQ_DEFAULT_PASS: hugh-hefner
+    profiles: [all, dependencies, content, users, recommendations, reviews]
+    ports:
+      - "5672:5672"   # amqp
+      - "15672:15672" # http
+      - "15692:15692" # http/promethus
     networks: [movies]
 
 networks:
