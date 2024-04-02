@@ -8,7 +8,7 @@ services:
       args:
         - SERVICE=gateway
     restart: unless-stopped
-    profiles: [all, gateway, content, users, recommendations, reviews]
+    profiles: [all, gateway]
     ports:
         - "9000:8080"
     networks: [movies]
@@ -20,22 +20,22 @@ services:
         - SERVICE=content
     restart: unless-stopped
     profiles: [all, content]
-    depends_on: [gateway, rabbit]
+    depends_on: [rabbit]
     ports:
       - "9001:8080"
-    networks: [movies]
+    networks: [movies, content]
 
-  users:
-    build:
-      context: .
-      args:
-        - SERVICE=users
+  postgres-content:
+    image: postgres:16
     restart: unless-stopped
-    profiles: [all, users]
-    depends_on: [gateway, rabbit]
+    profiles: [all, dependencies, content]
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: content
     ports:
-        - "9002:8080"
-    networks: [movies]
+      - "54321:5432"
+    networks: [content]
 
   recommendations:
     build:
@@ -44,10 +44,22 @@ services:
         - SERVICE=recommendations
     restart: unless-stopped
     profiles: [all, recommendations]
-    depends_on: [gateway, rabbit]
+    depends_on: [rabbit]
     ports:
       - "9003:8080"
-    networks: [movies]
+    networks: [movies, recommendations]
+
+  postgres-recommendations:
+    image: postgres:16
+    restart: unless-stopped
+    profiles: [all, dependencies, recommendations]
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: recommendations
+    ports:
+      - "54323:5432"
+    networks: [recommendations]
 
   reviews:
     build:
@@ -56,21 +68,22 @@ services:
         - SERVICE=reviews
     restart: unless-stopped
     profiles: [all, reviews]
-    depends_on: [gateway, rabbit]
+    depends_on: [rabbit, postgres-reviews]
     ports:
       - "9004:8080"
-    networks: [movies]
+    networks: [movies, reviews]
 
-  postgres:
+  postgres-reviews:
     image: postgres:16
     restart: unless-stopped
-    profiles: [all, dependencies]
+    profiles: [all, dependencies, reviews]
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: reviews
     ports:
-      - "5432:5432"
+      - "54324:5432"
+    networks: [reviews]
 
   rabbit:
     image: rabbitmq:3-management
@@ -79,7 +92,7 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: playboy
       RABBITMQ_DEFAULT_PASS: hugh-hefner
-    profiles: [all, dependencies, content, users, recommendations, reviews]
+    profiles: [all, dependencies, content, recommendations, reviews]
     ports:
       - "5672:5672"   # amqp
       - "15672:15672" # http
@@ -88,4 +101,10 @@ services:
 
 networks:
   movies:
+    driver: bridge
+  content:
+    driver: bridge
+  recommendations:
+    driver: bridge
+  reviews:
     driver: bridge
