@@ -5,3 +5,9 @@ server:
 spring:
   application:
     name: content
+
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /swagger

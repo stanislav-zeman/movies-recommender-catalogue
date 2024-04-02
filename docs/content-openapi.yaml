@@ -1,0 +1,231 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:9001
+  description: Generated server url
+paths:
+  /content/{id}:
+    get:
+      tags:
+      - movie-rest-controller
+      operationId: findById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/MovieDto'
+    put:
+      tags:
+      - movie-rest-controller
+      operationId: updateMovie
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+      - movie-rest-controller
+      operationId: removeMovie
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /content:
+    get:
+      tags:
+      - movie-rest-controller
+      operationId: findAll
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieDto'
+    post:
+      tags:
+      - movie-rest-controller
+      operationId: addMovie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieSimpleDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+  /content/title/{title}:
+    get:
+      tags:
+      - movie-rest-controller
+      operationId: findByTitlePrefix
+      parameters:
+      - name: title
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieDto'
+  /content/:
+    get:
+      tags:
+      - movie-rest-controller
+      operationId: find
+      parameters:
+      - name: genre
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: title
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: year
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: directorName
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieDto'
+components:
+  schemas:
+    DirectorDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        dob:
+          type: string
+          format: date
+    GenreDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    MovieDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        genres:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenreDto'
+        title:
+          type: string
+        year:
+          type: integer
+          format: int32
+        description:
+          type: string
+        director:
+          $ref: '#/components/schemas/DirectorDto'
+        cast:
+          type: array
+          items:
+            type: string
+        playbill:
+          type: array
+          items:
+            type: string
+            format: byte
+    DirectorSimpleDto:
+      type: object
+      properties:
+        name:
+          type: string
+        dob:
+          type: string
+          format: date
+    GenreSimpleDto:
+      type: object
+      properties:
+        name:
+          type: string
+    MovieSimpleDto:
+      type: object
+      properties:
+        genres:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenreSimpleDto'
+        title:
+          type: string
+        year:
+          type: integer
+          format: int32
+        description:
+          type: string
+        director:
+          $ref: '#/components/schemas/DirectorSimpleDto'
+        cast:
+          type: array
+          items:
+            type: string
+        playbill:
+          type: array
+          items:
+            type: string
+            format: byte
