@@ -43,7 +43,7 @@ public class MovieFacade {
         return movieMapper.mapToDtoList(movies);
     }
 
-    public List<MovieDto> findByPrefixTitle(String titlePrefix) {
+    public List<MovieDto> findByTitlePrefix(String titlePrefix) {
         List<Movie> movies = movieService.findByTitlePrefix(titlePrefix);
         return movieMapper.mapToDtoList(movies);
     }

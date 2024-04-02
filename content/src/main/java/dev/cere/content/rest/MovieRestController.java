@@ -49,7 +49,7 @@ public class MovieRestController {
     @GetMapping(path = "/title/{title}")
     public ResponseEntity<List<MovieDto>> findByTitlePrefix(
             @PathVariable("title") String titlePrefix) {
-        return ResponseEntity.ok(movieFacade.findByPrefixTitle(titlePrefix));
+        return ResponseEntity.ok(movieFacade.findByTitlePrefix(titlePrefix));
     }
 
     // UPDATE
