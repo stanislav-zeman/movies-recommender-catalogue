@@ -14,4 +14,8 @@
   <name>content</name>
   <description>content</description>
 
+  <properties>
+    <main.basedir>${project.parent.basedir}</main.basedir>
+  </properties>
+
 </project>

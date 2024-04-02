@@ -14,6 +14,10 @@
   <name>gateway</name>
   <description>gateway</description>
 
+  <properties>
+    <main.basedir>${project.parent.basedir}</main.basedir>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
@@ -21,4 +25,19 @@
       <version>4.1.2</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-maven-plugin</artifactId>
+        <version>1.4</version>
+        <configuration>
+          <apiDocsUrl>http://localhost:9000/docs.yaml</apiDocsUrl>
+          <outputFileName>gateway-openapi.yaml</outputFileName>
+          <outputDir>${project.basedir}/../docs</outputDir>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

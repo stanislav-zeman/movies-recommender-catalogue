@@ -14,4 +14,22 @@
   <name>reviews</name>
   <description>reviews</description>
 
+  <properties>
+    <main.basedir>${project.parent.basedir}</main.basedir>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-maven-plugin</artifactId>
+        <version>1.4</version>
+        <configuration>
+          <apiDocsUrl>http://localhost:9004/docs.yaml</apiDocsUrl>
+          <outputFileName>reviews-openapi.yaml</outputFileName>
+          <outputDir>${project.basedir}/../docs</outputDir>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
