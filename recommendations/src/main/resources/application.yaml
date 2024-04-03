@@ -1,0 +1,25 @@
+server:
+  address: localhost
+  port: 9003
+
+spring:
+  application:
+    name: recommendations
+  jpa:
+    database: postgresql
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+  datasource:
+    url: jdbc:postgresql://postgres-recommendations:54323/recommendations
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /swagger
