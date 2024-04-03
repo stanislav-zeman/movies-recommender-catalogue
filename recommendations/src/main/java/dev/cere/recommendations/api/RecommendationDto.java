@@ -3,13 +3,13 @@ package dev.cere.recommendations.api;
 import java.util.List;
 
 public class RecommendationDto {
-    private List<String> recommendedMovies;
+    private List<Long> recommendedMovies;
 
-    public List<String> getRecommendedMovies() {
+    public List<Long> getRecommendedMovies() {
         return recommendedMovies;
     }
 
-    public void setRecommendedMovies(List<String> recommendedMovies) {
+    public void setRecommendedMovies(List<Long> recommendedMovies) {
         this.recommendedMovies = recommendedMovies;
     }
 }

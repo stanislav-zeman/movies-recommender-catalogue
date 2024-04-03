@@ -17,9 +17,6 @@ public class Review {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "review")
-    private String review;
-
     @Column(name = "stars")
     private Integer stars;
 
@@ -45,14 +42,6 @@ public class Review {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getReview() {
-        return review;
-    }
-
-    public void setReview(String review) {
-        this.review = review;
     }
 
     public Integer getStars() {
@@ -85,8 +74,6 @@ public class Review {
                 + contentId
                 + ", userId="
                 + userId
-                + ", review='"
-                + review
                 + '\''
                 + ", stars="
                 + stars
