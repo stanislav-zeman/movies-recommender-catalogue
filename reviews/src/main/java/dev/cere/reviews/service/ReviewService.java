@@ -1,5 +1,6 @@
 package dev.cere.reviews.service;
 
+import dev.cere.reviews.api.ReviewPutDto;
 import dev.cere.reviews.data.entities.Review;
 import dev.cere.reviews.data.repository.ReviewRepository;
 import dev.cere.reviews.exceptions.ResourceNotFoundException;
@@ -31,5 +32,30 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public Page<Review> findAll(Pageable pageable) {
         return reviewRepository.findAll(pageable);
+    }
+
+    @Transactional
+    public Review create(Review review) {
+        return reviewRepository.save(review);
+    }
+
+    @Transactional
+    public Review update(Long id, ReviewPutDto reviewPutDto) {
+        var review =
+                reviewRepository
+                        .findById(id)
+                        .orElseThrow(
+                                () ->
+                                        new ResourceNotFoundException(
+                                                "Review with id: " + id + " was not " + "found."));
+        review.setReview(reviewPutDto.getReview());
+        review.setStars(reviewPutDto.getStars());
+        reviewRepository.save(review);
+        return review;
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        reviewRepository.deleteById(id);
     }
 }

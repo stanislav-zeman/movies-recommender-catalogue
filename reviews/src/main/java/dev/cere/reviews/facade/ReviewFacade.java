@@ -1,6 +1,8 @@
 package dev.cere.reviews.facade;
 
 import dev.cere.reviews.api.ReviewDto;
+import dev.cere.reviews.api.ReviewPutDto;
+import dev.cere.reviews.api.ReviewSimpleDto;
 import dev.cere.reviews.mappers.ReviewMapper;
 import dev.cere.reviews.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +31,18 @@ public class ReviewFacade {
     @Transactional(readOnly = true)
     public Page<ReviewDto> findAll(Pageable pageable) {
         return reviewMapper.mapToPageDto(reviewService.findAll(pageable));
+    }
+
+    public ReviewDto create(ReviewSimpleDto reviewSimpleDto) {
+        var review = reviewMapper.mapFromSimpleDto(reviewSimpleDto);
+        return reviewMapper.mapToDto(reviewService.create(review));
+    }
+
+    public ReviewDto update(Long id, ReviewPutDto reviewPutDto) {
+        return reviewMapper.mapToDto(reviewService.update(id, reviewPutDto));
+    }
+
+    public void delete(Long id) {
+        reviewService.delete(id);
     }
 }
