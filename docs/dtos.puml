@@ -1,0 +1,78 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+hide circle
+skinparam classAttributeIconSize 0
+
+class ReviewDto #f1f7b5 {
+    -id: Long
+    -contentId: Long
+    -userId: Long
+    -review: String
+    -stars: int
+}
+
+class ReviewSimpleDto #f1f7b5 {
+    -contentId: Long
+    -userId: Long
+    -review: String
+    -stars: int
+}
+
+class ReviewPutDto #f1f7b5 {
+    -review: String
+    -stars: int
+}
+
+class RecommendationDto #fd8a8a {
+    -ids: List<Long>
+}
+
+class MovieDto #a8d1d1 {
+    -id: Long
+    -genres: List<GenreDto>
+    -title: String
+    -year: int
+    -description: String
+    -director: DirectorDto
+    -cast: List<String>
+    -playbill: byte[]
+}
+
+class GenreDto #a8d1d1 {
+    -id: Long
+    -name: String
+}
+
+class DirectorDto #a8d1d1 {
+    -id: Long
+    -name: String
+    -dob: LocalDate
+}
+
+MovieDto *-- DirectorDto
+MovieDto *-- GenreDto
+
+class MovieSimpleDto #a8d1d1  {
+    -genres: List<GenreSimpleDto>
+    -title: String
+    -year: int
+    -description: String
+    -director: DirectorSimpleDto
+    -cast: List<String>
+    -playbill: byte[]
+}
+
+class GenreSimpleDto #a8d1d1 {
+    -name: String
+}
+
+class DirectorSimpleDto #a8d1d1 {
+    -name: String
+    -dob: LocalDate
+}
+
+MovieSimpleDto *-- DirectorSimpleDto
+MovieSimpleDto *-- GenreSimpleDto
+
+@enduml
