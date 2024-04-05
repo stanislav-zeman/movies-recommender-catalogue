@@ -27,7 +27,6 @@ public class GatewayApplication {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-        System.out.println("recommendationsServiceUri: " + recommendationsServiceUri);
         return builder.routes()
                 .route(r -> r.path("/content/*").or().path("/content").uri(contentServiceUri))
                 .route(r -> r.path("/users/*").or().path("/users").uri(usersServiceUri))

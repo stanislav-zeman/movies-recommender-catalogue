@@ -16,10 +16,10 @@ springdoc:
 
 services:
   content:
-    uri: http://localhost:9001
+    uri: http://content:8080
   users:
-    uri: http://localhost:9002
+    uri: http://users:8080
   recommendations:
-    uri: http://localhost:9003
+    uri: http://recommendations:8080
   reviews:
-    uri: http://localhost:9004
+    uri: http://reviews:8080
