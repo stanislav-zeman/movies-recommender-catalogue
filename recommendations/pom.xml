@@ -18,4 +18,18 @@
     <main.basedir>${project.parent.basedir}</main.basedir>
   </properties>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-maven-plugin</artifactId>
+        <version>1.4</version>
+        <configuration>
+          <apiDocsUrl>http://localhost:9003/docs.yaml</apiDocsUrl>
+          <outputFileName>recommendations-openapi.yaml</outputFileName>
+          <outputDir>${project.basedir}/../docs</outputDir>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
