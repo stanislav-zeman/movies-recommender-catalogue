@@ -1,6 +1,6 @@
 server:
-  address: localhost
-  port: 9004
+  address: 0.0.0.0
+  port: 8080
 
 spring:
   application:
@@ -13,7 +13,7 @@ spring:
       ddl-auto: create
     generate-ddl: true
   datasource:
-    url: jdbc:postgresql://postgres-reviews:5432/reviews
+    url: jdbc:postgresql://localhost:54324/reviews
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver

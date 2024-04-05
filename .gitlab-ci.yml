@@ -81,7 +81,7 @@ test-gateway:
     - shared-fi
 
   script:
-    - "mvn test --projects dev.cere:gateway"
+    - "mvn test --projects dev.cere:gateway -Dspring.profiles.active=docker"
 
 test-content:
   stage: test
@@ -94,7 +94,7 @@ test-content:
         POSTGRES_DB: content
 
   script:
-    - "mvn test --projects dev.cere:content"
+    - "mvn test --projects dev.cere:content -Dspring.profiles.active=docker"
 
 test-recommendations:
   stage: test
@@ -107,7 +107,7 @@ test-recommendations:
         POSTGRES_DB: recommendations
 
   script:
-    - "mvn test --projects dev.cere:recommendations"
+    - "mvn test --projects dev.cere:recommendations -Dspring.profiles.active=docker"
 
 test-reviews:
   stage: test
@@ -120,4 +120,4 @@ test-reviews:
         POSTGRES_DB: reviews
 
   script:
-    - "mvn test --projects dev.cere:reviews"
+    - "mvn test --projects dev.cere:reviews -Dspring.profiles.active=docker"

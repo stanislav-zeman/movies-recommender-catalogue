@@ -1,5 +1,5 @@
 FROM maven:3.9.6-eclipse-temurin-21 as build
-MAINTAINER cere.dev
+LABEL org.opencontainers.image.authors="cere.dev"
 ARG SERVICE
 WORKDIR /usr/build
 
@@ -14,4 +14,4 @@ WORKDIR /usr/${SERVICE}
 COPY --from=build /usr/build/${SERVICE}/target/*.jar app.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java","-jar", "-Dspring.profiles.active=docker", "app.jar"]
