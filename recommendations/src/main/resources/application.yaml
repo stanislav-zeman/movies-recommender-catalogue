@@ -17,9 +17,20 @@ spring:
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: playboy
+    password: hugh-hefner
 
 springdoc:
   api-docs:
     path: /docs
   swagger-ui:
     path: /swagger
+
+messaging:
+  queue:
+    name: reviews
+    exchange: reviews
+    routing-key: reviews

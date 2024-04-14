@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.any;
 
 import dev.cere.reviews.api.ReviewDto;
 import dev.cere.reviews.mappers.ReviewMapper;
+import dev.cere.reviews.messaging.MessageActionType;
+import dev.cere.reviews.service.ReviewMessagingService;
 import dev.cere.reviews.service.ReviewService;
 import dev.cere.reviews.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class ReviewFacadeTest {
     @Mock private ReviewService reviewService;
+
+    @Mock private ReviewMessagingService reviewMessagingService;
 
     @Mock private ReviewMapper reviewMapper;
 
@@ -43,6 +47,9 @@ public class ReviewFacadeTest {
                 .thenReturn(TestDataFactory.bigBustyMilfByHughHefner);
         Mockito.when(reviewMapper.mapToDto(any()))
                 .thenReturn(TestDataFactory.bigBustyMilfByHughHefnerDto);
+        Mockito.doNothing()
+                .when(reviewMessagingService)
+                .sendMessage(TestDataFactory.bigBustyMilfByHughHefnerDto, MessageActionType.CREATE);
 
         ReviewDto review = reviewFacade.create(TestDataFactory.bigBustyMilfByHughHefnerSimpleDto);
 
@@ -56,6 +63,11 @@ public class ReviewFacadeTest {
                 .thenReturn(TestDataFactory.updatedBigBustyMilfByHughHefner);
         Mockito.when(reviewMapper.mapToDto(any()))
                 .thenReturn(TestDataFactory.updatedBigBustyMilfByHughHefnerDto);
+        Mockito.doNothing()
+                .when(reviewMessagingService)
+                .sendMessage(
+                        TestDataFactory.updatedBigBustyMilfByHughHefnerDto,
+                        MessageActionType.UPDATE);
 
         ReviewDto review = reviewFacade.update(id, TestDataFactory.bigBustyMilfByHughHefnerPutDto);
 
@@ -66,6 +78,7 @@ public class ReviewFacadeTest {
     void delete_reviewDeleted_returnsNothing() {
         Long id = 4L;
         Mockito.doNothing().when(reviewService).delete(id);
+        Mockito.doNothing().when(reviewMessagingService).sendMessage(id, MessageActionType.DELETE);
 
         reviewFacade.delete(id);
     }

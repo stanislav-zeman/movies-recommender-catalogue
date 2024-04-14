@@ -4,6 +4,8 @@ import dev.cere.reviews.api.ReviewDto;
 import dev.cere.reviews.api.ReviewPutDto;
 import dev.cere.reviews.api.ReviewSimpleDto;
 import dev.cere.reviews.mappers.ReviewMapper;
+import dev.cere.reviews.messaging.MessageActionType;
+import dev.cere.reviews.service.ReviewMessagingService;
 import dev.cere.reviews.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,11 +17,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ReviewFacade {
     private final ReviewService reviewService;
+    private final ReviewMessagingService reviewMessagingService;
     private final ReviewMapper reviewMapper;
 
     @Autowired
-    public ReviewFacade(ReviewService reviewService, ReviewMapper reviewMapper) {
+    public ReviewFacade(
+            ReviewService reviewService,
+            ReviewMessagingService reviewMessagingService,
+            ReviewMapper reviewMapper) {
         this.reviewService = reviewService;
+        this.reviewMessagingService = reviewMessagingService;
         this.reviewMapper = reviewMapper;
     }
 
@@ -35,14 +42,19 @@ public class ReviewFacade {
 
     public ReviewDto create(ReviewSimpleDto reviewSimpleDto) {
         var review = reviewMapper.mapFromSimpleDto(reviewSimpleDto);
-        return reviewMapper.mapToDto(reviewService.create(review));
+        var reviewDto = reviewMapper.mapToDto(reviewService.create(review));
+        reviewMessagingService.sendMessage(reviewDto, MessageActionType.CREATE);
+        return reviewDto;
     }
 
     public ReviewDto update(Long id, ReviewPutDto reviewPutDto) {
-        return reviewMapper.mapToDto(reviewService.update(id, reviewPutDto));
+        var messageDto = reviewMapper.mapToDto(reviewService.update(id, reviewPutDto));
+        reviewMessagingService.sendMessage(messageDto, MessageActionType.UPDATE);
+        return messageDto;
     }
 
     public void delete(Long id) {
         reviewService.delete(id);
+        reviewMessagingService.sendMessage(id, MessageActionType.DELETE);
     }
 }

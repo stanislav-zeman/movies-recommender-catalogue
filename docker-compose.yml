@@ -8,10 +8,10 @@ services:
       args:
         - SERVICE=gateway
     restart: unless-stopped
-    profiles: [all, gateway]
+    profiles: [ all, gateway ]
     ports:
-        - "9000:8080"
-    networks: [movies]
+      - "9000:8080"
+    networks: [ movies ]
 
   content:
     build:
@@ -19,23 +19,32 @@ services:
       args:
         - SERVICE=content
     restart: unless-stopped
-    profiles: [all, content]
-    depends_on: [rabbit]
+    profiles: [ all, content ]
+    depends_on:
+      rabbit:
+        condition: service_healthy
+      postgres-content:
+        condition: service_healthy
     ports:
       - "9001:8080"
-    networks: [movies, content]
+    networks: [ movies, content ]
 
   postgres-content:
     image: postgres:16
     restart: unless-stopped
-    profiles: [all, dependencies, content]
+    profiles: [ all, dependencies, content ]
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: content
     ports:
       - "54321:5432"
-    networks: [content]
+    networks: [ content ]
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U postgres -d content'" ]
+      interval: 2s
+      timeout: 3s
+      retries: 10
 
   recommendations:
     build:
@@ -43,23 +52,32 @@ services:
       args:
         - SERVICE=recommendations
     restart: unless-stopped
-    profiles: [all, recommendations]
-    depends_on: [rabbit]
+    profiles: [ all, recommendations ]
+    depends_on:
+      rabbit:
+        condition: service_healthy
+      postgres-recommendations:
+        condition: service_healthy
     ports:
       - "9003:8080"
-    networks: [movies, recommendations]
+    networks: [ movies, recommendations ]
 
   postgres-recommendations:
     image: postgres:16
     restart: unless-stopped
-    profiles: [all, dependencies, recommendations]
+    profiles: [ all, dependencies, recommendations ]
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: recommendations
     ports:
       - "54323:5432"
-    networks: [recommendations]
+    networks: [ recommendations ]
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U postgres -d recommendations'" ]
+      interval: 2s
+      timeout: 3s
+      retries: 10
 
   reviews:
     build:
@@ -67,23 +85,32 @@ services:
       args:
         - SERVICE=reviews
     restart: unless-stopped
-    profiles: [all, reviews]
-    depends_on: [rabbit, postgres-reviews]
+    profiles: [ all, reviews ]
+    depends_on:
+      rabbit:
+        condition: service_healthy
+      postgres-reviews:
+        condition: service_healthy
     ports:
       - "9004:8080"
-    networks: [movies, reviews]
+    networks: [ movies, reviews ]
 
   postgres-reviews:
     image: postgres:16
     restart: unless-stopped
-    profiles: [all, dependencies, reviews]
+    profiles: [ all, dependencies, reviews ]
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: reviews
     ports:
       - "54324:5432"
-    networks: [reviews]
+    networks: [ reviews ]
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U postgres -d reviews'" ]
+      interval: 2s
+      timeout: 3s
+      retries: 10
 
   rabbit:
     image: rabbitmq:3-management
@@ -92,12 +119,17 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: playboy
       RABBITMQ_DEFAULT_PASS: hugh-hefner
-    profiles: [all, dependencies, content, recommendations, reviews]
+    profiles: [ all, dependencies, content, recommendations, reviews ]
     ports:
       - "5672:5672"   # amqp
       - "15672:15672" # http
       - "15692:15692" # http/promethus
-    networks: [movies]
+    networks: [ movies ]
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 2s
+      timeout: 3s
+      retries: 10
 
 networks:
   movies:

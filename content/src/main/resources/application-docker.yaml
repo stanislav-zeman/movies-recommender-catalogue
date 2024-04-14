@@ -5,6 +5,11 @@ server:
 spring:
   application:
     name: content
+  rabbitmq:
+    host: rabbit
+    port: 5672
+    username: playboy
+    password: hugh-hefner
 
 springdoc:
   api-docs:
