@@ -5,6 +5,7 @@ import dev.cere.content.api.Movie.MovieSimpleDto;
 import dev.cere.content.facade.MovieFacade;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +22,9 @@ public class MovieRestController {
 
     // CREATE
     @PostMapping
-    public ResponseEntity<Void> addMovie(@RequestBody MovieSimpleDto movieSimpleDto) {
-        movieFacade.addMovie(movieSimpleDto);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<MovieDto> addMovie(@RequestBody MovieSimpleDto movieSimpleDto) {
+        MovieDto addedMovie = movieFacade.addMovie(movieSimpleDto);
+        return new ResponseEntity<>(addedMovie, HttpStatus.CREATED);
     }
 
     // READ
@@ -54,10 +55,10 @@ public class MovieRestController {
 
     // UPDATE
     @PutMapping(path = "/{id}")
-    public ResponseEntity<Void> updateMovie(
+    public ResponseEntity<MovieDto> updateMovie(
             @PathVariable("id") Long id, @RequestBody MovieDto updatedMovieDto) {
-        movieFacade.updateMovie(id, updatedMovieDto);
-        return ResponseEntity.noContent().build();
+        MovieDto updatedResponseMovieDto = movieFacade.updateMovie(id, updatedMovieDto);
+        return ResponseEntity.ok().body(updatedResponseMovieDto);
     }
 
     // DELETE

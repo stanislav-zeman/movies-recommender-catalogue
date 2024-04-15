@@ -1,9 +1,18 @@
 package dev.cere.content.data.model;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 
+@Entity
 public class Genre {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @NotNull
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
 
     public Long getId() {
@@ -25,14 +34,13 @@ public class Genre {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Genre genre = (Genre) o;
-        return Objects.equals(getId(), genre.getId());
+        if (!(o instanceof Genre genre)) return false;
+        return Objects.equals(getName(), genre.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(getName());
     }
 
     @Override

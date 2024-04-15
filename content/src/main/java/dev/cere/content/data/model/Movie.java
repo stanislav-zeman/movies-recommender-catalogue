@@ -1,18 +1,45 @@
 package dev.cere.content.data.model;
 
-import java.io.Serializable;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class Movie implements Serializable {
+@Entity
+@Table(name = "Movie")
+public class Movie {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "movie_genre",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private List<Genre> genres;
+
+    @NotNull
+    @Column(name = "title", nullable = false)
     private String title;
+
+    @Column(name = "year")
     private int year;
+
+    @ManyToOne
+    @JoinColumn(name = "director_id")
     private Director director;
+
+    @Column(name = "description")
     private String description;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Column(name = "movie_cast")
     private List<String> cast;
+
+    @Column(name = "playbill")
     private byte[] playbill;
 
     public Long getId() {
@@ -82,14 +109,15 @@ public class Movie implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Movie movie = (Movie) o;
-        return Objects.equals(getId(), movie.getId());
+        if (!(o instanceof Movie movie)) return false;
+        return getYear() == movie.getYear()
+                && Objects.equals(getTitle(), movie.getTitle())
+                && Objects.equals(getDirector(), movie.getDirector());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(getTitle(), getYear(), getDirector());
     }
 
     @Override

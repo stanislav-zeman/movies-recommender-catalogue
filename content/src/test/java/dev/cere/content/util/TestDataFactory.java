@@ -13,81 +13,84 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TestDataFactory {
+
+    public static Genre actionGenre = getGenreFactory("Action");
+    public static Genre thrillerGenre = getGenreFactory("Thriller");
+    public static Genre dramaGenre = getGenreFactory("Drama");
+
+    public static Director dieHardDirector =
+            getDirectorFactory("John McTiernan", LocalDate.of(1951, 1, 8));
+    public static Director dieHard2Director =
+            getDirectorFactory("Renny Harlin", LocalDate.of(1959, 3, 15));
+    public static Director rainmanDirector =
+            getDirectorFactory("Barry Levinson", LocalDate.of(1942, 4, 6));
+
     public static Movie dieHard =
             getMovieFactory(
-                    1L,
-                    List.of("Action", "Thriller"),
+                    List.of(actionGenre, thrillerGenre),
                     "Die Hard",
                     1988,
                     "A New York City police officer tries to save his estranged wife and several"
                             + " others taken hostage by terrorists during a Christmas party at the"
                             + " Nakatomi Plaza in Los Angeles.",
-                    "John McTiernan",
-                    LocalDate.of(1951, 1, 8),
+                    dieHardDirector,
                     List.of("Bruce Willis", "Alan Rickman", "Bonnie Bedelia"));
     public static MovieDto dieHardDto =
             getMovieDtoFactory(
                     1L,
-                    List.of("Action", "Thriller"),
+                    List.of(actionGenre, thrillerGenre),
                     "Die Hard",
                     1988,
                     "A New York City police officer tries to save his estranged wife and several"
                             + " others taken hostage by terrorists during a Christmas party at the"
                             + " Nakatomi Plaza in Los Angeles.",
-                    "John McTiernan",
-                    LocalDate.of(1951, 1, 8),
+                    dieHardDirector,
                     List.of("Bruce Willis", "Alan Rickman", "Bonnie Bedelia"));
 
     public static Movie dieHard2 =
             getMovieFactory(
-                    2L,
-                    List.of("Action", "Thriller"),
+                    List.of(actionGenre, thrillerGenre),
                     "Die Hard 2",
                     1990,
                     "John McClane attempts to avert disaster as rogue military operatives seize"
                             + " control of Dulles International Airport in Washington, D.C.",
-                    "Renny Harlin",
-                    LocalDate.of(1959, 3, 15),
+                    dieHard2Director,
                     List.of("Bruce Willis", "William Atherton", "Bonnie Bedelia"));
 
     public static MovieDto dieHard2Dto =
             getMovieDtoFactory(
                     2L,
-                    List.of("Action", "Thriller"),
+                    List.of(actionGenre, thrillerGenre),
                     "Die Hard 2",
                     1990,
                     "John McClane attempts to avert disaster as rogue military operatives seize"
                             + " control of Dulles International Airport in Washington, D.C.",
-                    "Renny Harlin",
-                    LocalDate.of(1959, 3, 15),
+                    dieHard2Director,
                     List.of("Bruce Willis", "William Atherton", "Bonnie Bedelia"));
 
     public static Movie rainMan =
             getMovieFactory(
-                    3L,
-                    List.of("Drama"),
+                    List.of(dramaGenre),
                     "Rain Man",
                     1988,
                     "After a selfish L.A. yuppie learns his estranged father left a fortune to an"
                         + " autistic-savant brother in Ohio that he didn't know existed, he"
                         + " absconds with his brother and sets out across the country, hoping to"
                         + " gain a larger inheritance.",
-                    "Barry Levinson",
-                    LocalDate.of(1942, 4, 6),
+                    rainmanDirector,
                     List.of("Dustin Hoffman", "Tom Cruise", "Valeria Golino"));
 
     public static MovieDto rainManDto =
             getMovieDtoFactory(
                     3L,
-                    List.of("Drama"),
+                    List.of(dramaGenre),
                     "Rain Man",
                     1988,
                     "After a selfish L.A. yuppie learns his estranged father left a fortune to an"
                         + " autistic-savant brother in Ohio that he didn't know existed, he"
                         + " absconds with his brother and sets out across the country, hoping to"
                         + " gain a larger inheritance.",
-                    "Barry Levinson",
-                    LocalDate.of(1942, 4, 6),
+                    rainmanDirector,
                     List.of("Dustin Hoffman", "Tom Cruise", "Valeria Golino"));
 
     public static List<Movie> moviesOf1988 = List.of(dieHard, rainMan);
@@ -97,22 +100,34 @@ public class TestDataFactory {
     public static List<Movie> dieHardMovies = List.of(dieHard, dieHard2);
     public static List<MovieDto> dieHardMoviesDtos = List.of(dieHardDto, dieHard2Dto);
 
-    private static MovieDto getMovieDtoFactory(
+    public static Genre getGenreFactory(String name) {
+        Genre genre = new Genre();
+        genre.setName(name);
+        return genre;
+    }
+
+    public static Director getDirectorFactory(String name, LocalDate dob) {
+        Director director = new Director();
+        director.setName(name);
+        director.setDob(dob);
+        return director;
+    }
+
+    public static MovieDto getMovieDtoFactory(
             Long id,
-            List<String> genres,
+            List<Genre> genres,
             String title,
             int year,
             String description,
-            String directorName,
-            LocalDate directorDob,
+            Director director,
             List<String> cast) {
         MovieDto movieDto = new MovieDto();
         movieDto.setId(id);
 
         List<GenreDto> movieGenreDtos = new ArrayList<>();
-        for (String genreName : genres) {
+        for (Genre genre : genres) {
             GenreDto genreDto = new GenreDto();
-            genreDto.setName(genreName);
+            genreDto.setName(genre.getName());
             movieGenreDtos.add(genreDto);
         }
         movieDto.setGenres(movieGenreDtos);
@@ -124,8 +139,8 @@ public class TestDataFactory {
         movieDto.setDescription(description);
 
         DirectorDto directorDto = new DirectorDto();
-        directorDto.setName(directorName);
-        directorDto.setDob(directorDob);
+        directorDto.setName(director.getName());
+        directorDto.setDob(director.getDob());
         movieDto.setDirector(directorDto);
 
         movieDto.setCast(cast);
@@ -133,25 +148,16 @@ public class TestDataFactory {
         return movieDto;
     }
 
-    private static Movie getMovieFactory(
-            Long id,
-            List<String> genres,
+    public static Movie getMovieFactory(
+            List<Genre> genres,
             String title,
             int year,
             String description,
-            String directorName,
-            LocalDate directorDob,
+            Director director,
             List<String> cast) {
         Movie movie = new Movie();
-        movie.setId(id);
 
-        List<Genre> movieGenres = new ArrayList<>();
-        for (String genreName : genres) {
-            Genre genre = new Genre();
-            genre.setName(genreName);
-            movieGenres.add(genre);
-        }
-        movie.setGenres(movieGenres);
+        movie.setGenres(genres);
 
         movie.setTitle(title);
 
@@ -159,9 +165,6 @@ public class TestDataFactory {
 
         movie.setDescription(description);
 
-        Director director = new Director();
-        director.setName(directorName);
-        director.setDob(directorDob);
         movie.setDirector(director);
 
         movie.setCast(cast);

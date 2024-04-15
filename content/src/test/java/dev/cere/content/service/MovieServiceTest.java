@@ -26,11 +26,12 @@ public class MovieServiceTest {
     @Test
     void findById_movieFound_returnsMovie() {
         // Arrange
-        Mockito.when(movieRepository.findById(1L))
+        Long id = 1L;
+        Mockito.when(movieRepository.findById(id))
                 .thenReturn(Optional.ofNullable(TestDataFactory.dieHard));
 
         // Act
-        Movie foundEntity = movieService.findById(1L);
+        Movie foundEntity = movieService.findById(id);
 
         // Assert
         assertThat(foundEntity).isEqualTo(TestDataFactory.dieHard);
@@ -40,6 +41,7 @@ public class MovieServiceTest {
     void findById_personNotFound_throwsResourceNotFoundException() {
         // Arrange
         Long id = 999L;
+        Mockito.when(movieRepository.findById(id)).thenReturn(Optional.empty());
 
         // Act
         Exception exception =
@@ -114,7 +116,7 @@ public class MovieServiceTest {
         // Arrange
         String genre = "Action";
         String title = "Die Hard 2";
-        int year = 1988;
+        int year = 1990;
         String directorName = "Renny Harlin";
         Mockito.when(movieRepository.find(genre, title, year, directorName))
                 .thenReturn(List.of(TestDataFactory.dieHard2));

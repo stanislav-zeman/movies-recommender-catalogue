@@ -22,9 +22,10 @@ public class MovieFacade {
     }
 
     // CREATE
-    public void addMovie(MovieSimpleDto movieSimpleDto) {
+    public MovieDto addMovie(MovieSimpleDto movieSimpleDto) {
         Movie newMovie = movieMapper.mapToMovie(movieSimpleDto);
-        movieService.addMovie(newMovie);
+        Movie addedMovie = movieService.addMovie(newMovie);
+        return movieMapper.mapToDto(addedMovie);
     }
 
     // READ
@@ -49,9 +50,10 @@ public class MovieFacade {
     }
 
     // UPDATE
-    public void updateMovie(Long id, MovieDto updatedMovieDto) {
+    public MovieDto updateMovie(Long id, MovieDto updatedMovieDto) {
         Movie movie = movieMapper.mapToMovie(updatedMovieDto);
-        movieService.updateMovie(id, movie);
+        Movie updatedResultMovie = movieService.updateMovie(id, movie);
+        return movieMapper.mapToDto(updatedResultMovie);
     }
 
     // DELETE

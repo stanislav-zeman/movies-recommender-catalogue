@@ -142,14 +142,15 @@ public class MovieRestControllerTest {
     void updateMovie_validRequestBody_callsUpdateOnFacade() {
         // Arrange
         Long id = 1L;
-        Mockito.doNothing().when(movieFacade).updateMovie(1L, TestDataFactory.dieHardDto);
+        Mockito.when(movieFacade.updateMovie(id, TestDataFactory.dieHardDto))
+                .thenReturn(TestDataFactory.dieHardDto);
 
         // Act
-        ResponseEntity<Void> response =
+        ResponseEntity<MovieDto> response =
                 movieRestController.updateMovie(id, TestDataFactory.dieHardDto);
 
         // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Mockito.verify(movieFacade, Mockito.times(1)).updateMovie(id, TestDataFactory.dieHardDto);
     }
 

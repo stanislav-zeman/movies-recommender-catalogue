@@ -137,7 +137,8 @@ public class MovieFacadeTest {
     void updateMovie_validId_exceptionNotThrown() {
         // Arrange
         Long id = 1L;
-        Mockito.doNothing().when(movieService).updateMovie(id, TestDataFactory.dieHard);
+        Mockito.when(movieService.updateMovie(id, TestDataFactory.dieHard))
+                .thenReturn(TestDataFactory.dieHard);
         Mockito.when(movieMapper.mapToMovie((MovieDto) any())).thenReturn(TestDataFactory.dieHard);
 
         // Act

@@ -3,12 +3,11 @@ package dev.cere.content.service;
 import dev.cere.content.data.model.Director;
 import dev.cere.content.data.model.Genre;
 import dev.cere.content.data.model.Movie;
-import dev.cere.content.data.repository.DirectorRepository;
-import dev.cere.content.data.repository.GenreRepository;
-import dev.cere.content.data.repository.MovieRepository;
+import dev.cere.content.data.repository.*;
 import dev.cere.content.exceptions.ResourceNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,32 +29,38 @@ public class MovieService {
     }
 
     // CREATE
-    public void addMovie(Movie newMovie) {
-        Random random = new Random();
+    public Movie addMovie(Movie newMovie) {
+        // Check if director of the new movie exists in db
+        // If not, persist the director
         Director newMovieDirector = newMovie.getDirector();
-        Director director =
-                directorRepository.find(newMovieDirector.getName(), newMovieDirector.getDob());
+        Optional<Director> director =
+                directorRepository.findByNameAndDob(
+                        newMovieDirector.getName(), newMovieDirector.getDob());
 
-        if (director == null) {
-            newMovieDirector.setId(random.nextLong(10, 100));
-            directorRepository.addDirector(newMovieDirector);
+        if (director.isPresent()) {
+            newMovie.setDirector(director.get());
         } else {
-            newMovie.setDirector(director);
+            directorRepository.save(newMovieDirector);
         }
 
+        // Check if all genres of the new movie exist in db
+        // If not, persist them
         List<Genre> newMovieGenres = newMovie.getGenres();
-        for (Genre newMovieGenre : newMovieGenres) {
-            Genre genre = genreRepository.find(newMovieGenre.getName());
-            if (genre == null) {
-                newMovieGenre.setId(random.nextLong(10, 100));
-                genreRepository.addGenre(newMovieGenre);
+        List<Genre> savedGenres = new ArrayList<>(); // To store saved genres
+
+        for (Genre genre : newMovieGenres) {
+            Optional<Genre> g = genreRepository.findByName(genre.getName());
+            if (g.isPresent()) {
+                savedGenres.add(g.get()); // Add existing genre to the list
             } else {
-                newMovieGenre.setId(genre.getId());
+                genreRepository.save(genre);
+                savedGenres.add(genre); // Add newly saved genre to the list
             }
         }
 
-        newMovie.setId(random.nextLong(10, 100));
-        movieRepository.addMovie(newMovie);
+        newMovie.setGenres(savedGenres);
+        movieRepository.save(newMovie);
+        return newMovie;
     }
 
     // READ
@@ -81,7 +86,7 @@ public class MovieService {
     }
 
     // UPDATE
-    public void updateMovie(Long id, Movie updatedMovie) {
+    public Movie updateMovie(Long id, Movie updatedMovie) {
         Movie movie =
                 movieRepository
                         .findById(id)
@@ -97,18 +102,17 @@ public class MovieService {
         movie.setDescription(updatedMovie.getDescription());
         movie.setCast(updatedMovie.getCast());
         movie.setPlaybill(updatedMovie.getPlaybill());
+        movieRepository.save(movie);
+        return movie;
     }
 
     // DELETE
     public void removeMovie(Long id) {
-        Movie movie =
-                movieRepository
-                        .findById(id)
-                        .orElseThrow(
-                                () ->
-                                        new ResourceNotFoundException(
-                                                "Movie with id: " + id + " was not found."));
-
-        movieRepository.removeMovie(movie);
+        Optional<Movie> movie = movieRepository.findById(id);
+        if (movie.isPresent()) {
+            movieRepository.deleteById(id);
+        } else {
+            throw new ResourceNotFoundException("Movie with id: " + id + " was not found.");
+        }
     }
 }
