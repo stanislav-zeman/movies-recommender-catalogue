@@ -39,6 +39,16 @@ public class ReviewRestController {
         return reviewFacade.findAll(pageable);
     }
 
+    @GetMapping(path = "/content/{id}")
+    public Page<ReviewDto> findAllByContentId(@PathVariable("id") Long id, Pageable pageable) {
+        return reviewFacade.findAllByContentId(id, pageable);
+    }
+
+    @GetMapping(path = "/users/{id}")
+    public Page<ReviewDto> findAllByUserId(@PathVariable("id") Long id, Pageable pageable) {
+        return reviewFacade.findAllByUserId(id, pageable);
+    }
+
     @PostMapping
     public ResponseEntity<ReviewDto> create(@RequestBody ReviewSimpleDto reviewSimpleDto) {
         var reviewDto = reviewFacade.create(reviewSimpleDto);

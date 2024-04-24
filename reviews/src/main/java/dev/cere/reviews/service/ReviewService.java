@@ -34,6 +34,16 @@ public class ReviewService {
         return reviewRepository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
+    public Page<Review> findAllByContentId(Long id, Pageable pageable) {
+        return reviewRepository.findAllByContentId(id, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Review> findAllByUserId(Long id, Pageable pageable) {
+        return reviewRepository.findAllByUserId(id, pageable);
+    }
+
     @Transactional
     public Review create(Review review) {
         return reviewRepository.save(review);

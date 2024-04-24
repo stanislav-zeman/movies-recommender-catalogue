@@ -40,6 +40,16 @@ public class ReviewFacade {
         return reviewMapper.mapToPageDto(reviewService.findAll(pageable));
     }
 
+    @Transactional(readOnly = true)
+    public Page<ReviewDto> findAllByContentId(Long id, Pageable pageable) {
+        return reviewMapper.mapToPageDto(reviewService.findAllByContentId(id, pageable));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ReviewDto> findAllByUserId(Long id, Pageable pageable) {
+        return reviewMapper.mapToPageDto(reviewService.findAllByUserId(id, pageable));
+    }
+
     public ReviewDto create(ReviewSimpleDto reviewSimpleDto) {
         var review = reviewMapper.mapFromSimpleDto(reviewSimpleDto);
         var reviewDto = reviewMapper.mapToDto(reviewService.create(review));
