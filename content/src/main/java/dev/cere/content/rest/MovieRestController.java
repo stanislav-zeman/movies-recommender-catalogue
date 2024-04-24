@@ -38,7 +38,7 @@ public class MovieRestController {
         return ResponseEntity.ok(movieFacade.findById(id));
     }
 
-    @GetMapping(path = "/")
+    @GetMapping(path = "/params")
     public ResponseEntity<List<MovieDto>> find(
             @RequestParam(value = "genre", required = false) String genre,
             @RequestParam(value = "title", required = false) String title,

@@ -6,7 +6,6 @@ import dev.cere.content.data.model.Movie;
 import dev.cere.content.data.repository.*;
 import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,62 +28,100 @@ public class SeedDataService {
     }
 
     @PostConstruct
-    public void insertDummyData() {
-        insertDummyMovies();
+    public void insertData() {
+        insertMovies();
     }
 
-    private void insertDummyMovies() {
-        Genre genre1 = new Genre();
-        genre1.setName("Action");
-        genreRepository.save(genre1);
+    private static Genre getGenreFactory(String name) {
+        Genre genre = new Genre();
+        genre.setName(name);
+        return genre;
+    }
 
-        Genre genre2 = new Genre();
-        genre2.setName("Horror");
-        genreRepository.save(genre2);
+    private static Director getDirectorFactory(String name, LocalDate dob) {
+        Director director = new Director();
+        director.setName(name);
+        director.setDob(dob);
+        return director;
+    }
 
-        Genre genre3 = new Genre();
-        genre3.setName("Romantic");
-        genreRepository.save(genre3);
+    private static Movie getMovieFactory(
+            List<Genre> genres,
+            String title,
+            int year,
+            String description,
+            Director director,
+            List<String> cast) {
+        Movie movie = new Movie();
 
-        Genre genre4 = new Genre();
-        genre4.setName("Comedy");
-        genreRepository.save(genre4);
+        movie.setGenres(genres);
 
-        Director director1 = new Director();
-        director1.setName("Name1");
-        director1.setDob(LocalDate.of(1960, 1, 1));
-        directorRepository.save(director1);
+        movie.setTitle(title);
 
-        Director director2 = new Director();
-        director2.setName("Name2");
-        director2.setDob(LocalDate.of(1960, 2, 2));
-        directorRepository.save(director2);
+        movie.setYear(year);
 
-        Movie movie1 = new Movie();
-        movie1.setGenres(List.of(genre1));
-        movie1.setTitle("Movie1");
-        movie1.setYear(2001);
-        movie1.setDirector(director1);
-        movie1.setDescription("Desc1");
-        movie1.setCast(Arrays.asList("Actor 1", "Actor 2"));
-        movieRepository.save(movie1);
+        movie.setDescription(description);
 
-        Movie movie2 = new Movie();
-        movie2.setGenres(List.of(genre2));
-        movie2.setTitle("Movie2");
-        movie2.setYear(2002);
-        movie2.setDirector(director2);
-        movie2.setDescription("Desc2");
-        movie2.setCast(Arrays.asList("Actor 3", "Actor 4"));
-        movieRepository.save(movie2);
+        movie.setDirector(director);
 
-        Movie movie3 = new Movie();
-        movie3.setGenres(Arrays.asList(genre3, genre4));
-        movie3.setTitle("Movie3");
-        movie3.setYear(2003);
-        movie3.setDirector(director2);
-        movie3.setDescription("Desc3");
-        movie3.setCast(Arrays.asList("Actor 5", "Actor 6"));
-        movieRepository.save(movie3);
+        movie.setCast(cast);
+
+        return movie;
+    }
+
+    private void insertMovies() {
+        Genre actionGenre = getGenreFactory("Action");
+        genreRepository.save(actionGenre);
+
+        Genre thrillerGenre = getGenreFactory("Thriller");
+        genreRepository.save(thrillerGenre);
+
+        Genre dramaGenre = getGenreFactory("Drama");
+        genreRepository.save(dramaGenre);
+
+        Director dieHardDirector = getDirectorFactory("John McTiernan", LocalDate.of(1951, 1, 8));
+        directorRepository.save(dieHardDirector);
+
+        Director dieHard2Director = getDirectorFactory("Renny Harlin", LocalDate.of(1959, 3, 15));
+        directorRepository.save(dieHard2Director);
+
+        Director rainmanDirector = getDirectorFactory("Barry Levinson", LocalDate.of(1942, 4, 6));
+        directorRepository.save(rainmanDirector);
+
+        Movie dieHard =
+                getMovieFactory(
+                        List.of(actionGenre, thrillerGenre),
+                        "Die Hard",
+                        1988,
+                        "A New York City police officer tries to save his estranged wife and"
+                            + " several others taken hostage by terrorists during a Christmas party"
+                            + " at the Nakatomi Plaza in Los Angeles.",
+                        dieHardDirector,
+                        List.of("Bruce Willis", "Alan Rickman", "Bonnie Bedelia"));
+        movieRepository.save(dieHard);
+
+        Movie dieHard2 =
+                getMovieFactory(
+                        List.of(actionGenre, thrillerGenre),
+                        "Die Hard 2",
+                        1990,
+                        "John McClane attempts to avert disaster as rogue military operatives seize"
+                                + " control of Dulles International Airport in Washington, D.C.",
+                        dieHard2Director,
+                        List.of("Bruce Willis", "William Atherton", "Bonnie Bedelia"));
+        movieRepository.save(dieHard2);
+
+        Movie rainMan =
+                getMovieFactory(
+                        List.of(dramaGenre),
+                        "Rain Man",
+                        1988,
+                        "After a selfish L.A. yuppie learns his estranged father left a fortune to"
+                            + " an autistic-savant brother in Ohio that he didn't know existed, he"
+                            + " absconds with his brother and sets out across the country, hoping"
+                            + " to gain a larger inheritance.",
+                        rainmanDirector,
+                        List.of("Dustin Hoffman", "Tom Cruise", "Valeria Golino"));
+        movieRepository.save(rainMan);
     }
 }
