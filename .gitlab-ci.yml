@@ -1,26 +1,27 @@
+image: maven:latest
+
+cache:
+ paths:
+   - .m2/repository
+   - target
+ key: one-key-to-rule-them-all
+
 variables:
-  MAVEN_OPTS: -Dmaven.repo.local=.m2/repository
+  MAVEN_OPTS: -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
   DOCKER_HOST: "tcp://docker:2375"
   DOCKER_TLS_CERTDIR: ""
   DOCKER_DRIVER: overlay2
 
-image: maven:latest
-
 services:
-  - name: rabbitmq:3
+  - name: rabbitmq:alpine
     alias: rabbit
 
 stages:
    - validate
    - build
    - test
-
-cache:
- paths:
-   - .m2/repository
-   - target
 
 validate:
  stage: validate
@@ -77,7 +78,7 @@ test-gateway:
 test-content:
   stage: test
   services:
-    - name: postgres:16
+    - name: postgres:16-alpine
       alias: postgres-content
       variables:
         POSTGRES_DB: content
@@ -91,7 +92,7 @@ test-content:
 test-recommendations:
  stage: test
  services:
-   - name: postgres:16
+   - name: postgres:16-alpine
      alias: postgres-recommendations
      variables:
        POSTGRES_DB: recommendations
@@ -105,7 +106,7 @@ test-recommendations:
 test-reviews:
  stage: test
  services:
-   - name: postgres:16
+   - name: postgres:16-alpine
      alias: postgres-reviews
      variables:
        POSTGRES_DB: reviews
