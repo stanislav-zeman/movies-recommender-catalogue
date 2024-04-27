@@ -28,7 +28,7 @@ public class TestDataFactory {
     public static ReviewPutDto bigBustyMilfByHughHefnerPutDto =
             getReviewPutDtoFactory("Or maybe I like them even more busty!", 3);
 
-    private static Review getReviewFactory(
+    public static Review getReviewFactory(
             Long id, Long contentId, Long userId, String reviewText, Integer stars) {
         Review review = new Review();
         review.setId(id);
@@ -39,7 +39,7 @@ public class TestDataFactory {
         return review;
     }
 
-    private static ReviewDto getReviewDtoFactory(
+    public static ReviewDto getReviewDtoFactory(
             Long id, Long contentId, Long userId, String reviewText, Integer stars) {
         ReviewDto review = new ReviewDto();
         review.setId(id);
@@ -50,7 +50,7 @@ public class TestDataFactory {
         return review;
     }
 
-    private static ReviewSimpleDto getReviewSimpleDtoFactory(
+    public static ReviewSimpleDto getReviewSimpleDtoFactory(
             Long contentId, Long userId, String reviewText, Integer stars) {
         ReviewSimpleDto review = new ReviewSimpleDto();
         review.setContentId(contentId);
@@ -60,7 +60,7 @@ public class TestDataFactory {
         return review;
     }
 
-    private static ReviewPutDto getReviewPutDtoFactory(String reviewText, Integer stars) {
+    public static ReviewPutDto getReviewPutDtoFactory(String reviewText, Integer stars) {
         ReviewPutDto review = new ReviewPutDto();
         review.setReview(reviewText);
         review.setStars(stars);
