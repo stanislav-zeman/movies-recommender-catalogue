@@ -2,6 +2,9 @@ variables:
   MAVEN_OPTS: -Dmaven.repo.local=.m2/repository
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
+  DOCKER_HOST: "tcp://docker:2375"
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_DRIVER: overlay2
 
 image: maven:latest
 
@@ -10,114 +13,105 @@ services:
     alias: rabbit
 
 stages:
-  - validate
-  - build
-  - test
+   - validate
+   - build
+   - test
 
 cache:
-  paths:
-    - .m2/repository
-    - target
+ paths:
+   - .m2/repository
+   - target
 
 validate:
-  stage: validate
-  tags:
-    - shared-fi
+ stage: validate
 
-  script:
-    - "mvn validate"
+ script:
+   - "mvn validate"
 
 format:
-  stage: validate
-  tags:
-    - shared-fi
+ stage: validate
 
-  script:
-    - "mvn spotless:check"
+ script:
+   - "mvn spotless:check"
 
 lint:
-  stage: validate
-  tags:
-    - shared-fi
+ stage: validate
 
-  script:
-    - "mvn spotbugs:check"
+ script:
+   - "mvn spotbugs:check"
 
 build-gateway:
-  stage: build
-  tags:
-    - shared-fi
+ stage: build
 
-  script:
-    - "mvn compile --projects dev.cere:gateway"
+ script:
+   - "mvn compile --projects dev.cere:gateway"
 
 build-content:
-  stage: build
-  tags:
-    - shared-fi
+ stage: build
 
-  script:
-    - "mvn compile --projects dev.cere:content"
+ script:
+   - "mvn compile --projects dev.cere:content"
 
 build-recommendations:
-  stage: build
-  tags:
-    - shared-fi
+ stage: build
 
-  script:
-    - "mvn compile --projects dev.cere:recommendations"
+ script:
+   - "mvn compile --projects dev.cere:recommendations"
 
 build-reviews:
-  stage: build
-  tags:
-    - shared-fi
+ stage: build
 
-  script:
-    - "mvn compile --projects dev.cere:reviews"
+ script:
+   - "mvn compile --projects dev.cere:reviews"
 
 test-gateway:
-  stage: test
-  tags:
-    - shared-fi
+ stage: test
+ services:
+  - name: docker:dind
+    alias: docker
+    command: [ "--tls=false" ]
 
-  script:
-    - "mvn test --projects dev.cere:gateway -Dspring.profiles.active=docker"
+ script:
+   - "mvn test --projects dev.cere:gateway -Dspring.profiles.active=docker"
 
 test-content:
   stage: test
-  tags:
-    - shared-fi
   services:
     - name: postgres:16
       alias: postgres-content
       variables:
         POSTGRES_DB: content
+    - name: docker:dind
+      alias: docker
+      command: [ "--tls=false" ]
 
   script:
     - "mvn test --projects dev.cere:content -Dspring.profiles.active=docker"
 
 test-recommendations:
-  stage: test
-  tags:
-    - shared-fi
-  services:
-    - name: postgres:16
-      alias: postgres-recommendations
-      variables:
-        POSTGRES_DB: recommendations
+ stage: test
+ services:
+   - name: postgres:16
+     alias: postgres-recommendations
+     variables:
+       POSTGRES_DB: recommendations
+   - name: docker:dind
+     alias: docker
+     command: [ "--tls=false" ]
 
-  script:
-    - "mvn test --projects dev.cere:recommendations -Dspring.profiles.active=docker"
+ script:
+   - "mvn test --projects dev.cere:recommendations -Dspring.profiles.active=docker"
 
 test-reviews:
-  stage: test
-  tags:
-    - shared-fi
-  services:
-    - name: postgres:16
-      alias: postgres-reviews
-      variables:
-        POSTGRES_DB: reviews
+ stage: test
+ services:
+   - name: postgres:16
+     alias: postgres-reviews
+     variables:
+       POSTGRES_DB: reviews
+   - name: docker:dind
+     alias: docker
+     command: [ "--tls=false" ]
 
-  script:
-    - "mvn test --projects dev.cere:reviews -Dspring.profiles.active=docker"
+ script:
+   - "mvn test --projects dev.cere:reviews -Dspring.profiles.active=docker"
