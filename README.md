@@ -30,6 +30,10 @@ Reviews is a service which handles all review related data. I.e. review manageme
 
 Recommendations is a service which handles all recommendations. It's sole purpose is to execute recommendation algorithm for specific content and evaluate the best possible suggestions on the data it stores.
 
+## Showcase
+
+We have implemented a possible showcase scenario that simulates meaningfull user interaction with the system. The scenario is implemented as a Postman collection and can be viewed on [this URL](https://www.postman.com/dungeon-software/workspace/movies-recommender/collection/24639654-cd972425-c986-450e-a944-2d9670557149?action=share&creator=24639654). Its explanation and goals are described in the collection itself.
+
 ## Architecture
 
 ![Architecture](docs/architecture.svg)
