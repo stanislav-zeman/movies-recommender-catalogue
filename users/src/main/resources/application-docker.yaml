@@ -1,3 +1,9 @@
 spring:
     application:
         name: users
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: [ "info", "logs", "prometheus", "health", "metrics" ]

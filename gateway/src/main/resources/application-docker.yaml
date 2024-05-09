@@ -23,3 +23,9 @@ services:
     uri: http://recommendations:8080
   reviews:
     uri: http://reviews:8080
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: [ "info", "logs", "prometheus", "health", "metrics" ]

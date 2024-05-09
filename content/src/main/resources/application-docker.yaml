@@ -28,3 +28,9 @@ springdoc:
     path: /docs
   swagger-ui:
     path: /swagger
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: [ "info", "logs", "prometheus", "health", "metrics" ]

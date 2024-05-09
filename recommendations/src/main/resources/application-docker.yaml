@@ -34,3 +34,9 @@ messaging:
     name: reviews
     exchange: reviews
     routing-key: reviews
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: [ "info", "logs", "prometheus", "health", "metrics" ]

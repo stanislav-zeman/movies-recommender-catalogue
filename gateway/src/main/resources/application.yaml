@@ -23,3 +23,9 @@ services:
     uri: http://localhost:9003
   reviews:
     uri: http://localhost:9004
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: [ "info", "logs", "prometheus", "health", "metrics" ]

@@ -130,6 +130,32 @@ services:
       interval: 2s
       timeout: 3s
       retries: 10
+  
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    container_name: prometheus
+    restart: unless-stopped
+    profiles: [ all, content, recommendations, reviews, gateway ]
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks: [ movies ]
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: grafana
+    restart: unless-stopped
+    profiles: [ all, content, recommendations, reviews, gateway ]
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+    volumes:
+      - ./config/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./data/grafana:/var/lib/grafana
+    networks: [ movies ]
 
 networks:
   movies:
