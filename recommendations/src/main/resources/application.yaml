@@ -1,6 +1,6 @@
 server:
   address: 0.0.0.0
-  port: 8080
+  port: 8081
 
 spring:
   application:
@@ -20,8 +20,8 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: playboy
-    password: hugh-hefner
+    username: guest
+    password: guest
 
 springdoc:
   api-docs:

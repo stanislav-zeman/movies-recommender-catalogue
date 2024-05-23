@@ -5,6 +5,7 @@ import dev.cere.reviews.api.ReviewSimpleDto;
 import dev.cere.reviews.data.entities.Review;
 import java.util.List;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 public interface ReviewMapper {
     ReviewDto mapToDto(Review review);
 
+    @Mapping(target = "id", ignore = true)
     Review mapFromSimpleDto(ReviewSimpleDto reviewSimpleDto);
 
     List<ReviewDto> mapToDtoList(List<Review> reviews);

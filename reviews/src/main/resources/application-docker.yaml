@@ -20,8 +20,8 @@ spring:
   rabbitmq:
     host: rabbit
     port: 5672
-    username: playboy
-    password: hugh-hefner
+    username: guest
+    password: guest
 
 springdoc:
   api-docs:

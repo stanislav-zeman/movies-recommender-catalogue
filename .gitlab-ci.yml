@@ -39,7 +39,7 @@ lint:
  stage: validate
 
  script:
-   - "mvn spotbugs:check"
+   - "mvn compile spotbugs:check"
 
 build-gateway:
  stage: build
@@ -53,17 +53,23 @@ build-content:
  script:
    - "mvn compile --projects dev.cere:content"
 
+build-messaging:
+ stage: build
+
+ script:
+   - "mvn compile --projects dev.cere:messaging"
+
 build-recommendations:
  stage: build
 
  script:
-   - "mvn compile --projects dev.cere:recommendations"
+   - "mvn compile -pl dev.cere:recommendations -am"
 
 build-reviews:
  stage: build
 
  script:
-   - "mvn compile --projects dev.cere:reviews"
+   - "mvn compile -pl dev.cere:reviews -am"
 
 test-gateway:
  stage: test
@@ -101,7 +107,7 @@ test-recommendations:
      command: [ "--tls=false" ]
 
  script:
-   - "mvn test --projects dev.cere:recommendations -Dspring.profiles.active=docker"
+   - "mvn test -pl dev.cere:recommendations -am -Dspring.profiles.active=docker"
 
 test-reviews:
  stage: test
@@ -115,4 +121,4 @@ test-reviews:
      command: [ "--tls=false" ]
 
  script:
-   - "mvn test --projects dev.cere:reviews -Dspring.profiles.active=docker"
+   - "mvn test -pl dev.cere:reviews -am -Dspring.profiles.active=docker"
