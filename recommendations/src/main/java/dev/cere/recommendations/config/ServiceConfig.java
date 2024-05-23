@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cere.recommendations.api.ReviewDto;
 import dev.cere.recommendations.api.ReviewPutDto;
-import dev.cere.recommendations.facade.ReviewFacade;
 import dev.cere.recommendations.mappers.ReviewMapper;
 import dev.cere.recommendations.messaging.MessageActionType;
 import dev.cere.recommendations.messaging.ReviewMessage;
@@ -33,7 +32,6 @@ public class ServiceConfig {
 
     private final AmqpAdmin rabbitAdmin;
     private final ReviewService reviewService;
-    private final ReviewFacade reviewFacade;
     private final ReviewMapper reviewMapper;
 
     @Value("${messaging.queue.name}")
@@ -48,13 +46,9 @@ public class ServiceConfig {
     private final ObjectMapper objectMapper;
 
     public ServiceConfig(
-            AmqpAdmin rabbitAdmin,
-            ReviewService reviewService,
-            ReviewMapper reviewMapper,
-            ReviewFacade reviewFacade) {
+            AmqpAdmin rabbitAdmin, ReviewService reviewService, ReviewMapper reviewMapper) {
         this.rabbitAdmin = rabbitAdmin;
         this.reviewService = reviewService;
-        this.reviewFacade = reviewFacade;
         this.reviewMapper = reviewMapper;
         this.objectMapper =
                 new ObjectMapper()
