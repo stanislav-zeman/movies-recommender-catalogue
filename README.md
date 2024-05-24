@@ -62,7 +62,7 @@ docker compose --profile reviews up
 
 If you want to test a single/multiple services, you will have to start their dependencies first:
 ```
-docker compose --profile dependecies up
+docker compose --profile dependencies up
 ```
 Running the tests is as simple as running:
 ```
