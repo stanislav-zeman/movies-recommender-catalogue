@@ -17,6 +17,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
+        <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
     </properties>
 
     <build>
