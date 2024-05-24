@@ -50,59 +50,22 @@ public class ServiceConfig {
         this.rabbitAdmin = rabbitAdmin;
         this.reviewService = reviewService;
         this.reviewMapper = reviewMapper;
-        this.objectMapper =
-                new ObjectMapper()
-                        .configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
-                        .registerModules();
-    }
-
-    @Bean
-    Queue queue() {
-        return new Queue(queueName, false);
-    }
-
-    @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(queueExchange);
-    }
-
-    @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(queueRoutingKey);
-    }
-
-    public void declareQueue() {
-        boolean durable = true;
-        boolean exclusive = false;
-        boolean autoDelete = false;
-
-        String queue =
-                rabbitAdmin.declareQueue(new Queue(queueName, durable, exclusive, autoDelete));
-
-        DirectExchange exchange = new DirectExchange(queueExchange, durable, autoDelete);
-        rabbitAdmin.declareExchange(exchange);
-
-        Binding.DestinationType destinationType = Binding.DestinationType.QUEUE;
-        Map<String, Object> arguments = null;
-        Binding binding =
-                new Binding(queue, destinationType, queueExchange, queueRoutingKey, arguments);
-        rabbitAdmin.declareBinding(binding);
+        this.objectMapper = new ObjectMapper()
+                .configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
+                .registerModules();
     }
 
     @RabbitListener(queues = "${messaging.queue.name}")
     public void handleMessage(Message message) throws JsonProcessingException {
         String jsonStringReviewMessage = new String(message.getBody(), StandardCharsets.UTF_8);
-        ReviewMessage reviewMessage =
-                objectMapper.readValue(jsonStringReviewMessage, ReviewMessage.class);
+        ReviewMessage reviewMessage = objectMapper.readValue(jsonStringReviewMessage, ReviewMessage.class);
 
         if (reviewMessage.getActionType() == MessageActionType.CREATE) {
-            ReviewDto reviewDto =
-                    objectMapper.readValue(reviewMessage.getJsonDataString(), ReviewDto.class);
+            ReviewDto reviewDto = objectMapper.readValue(reviewMessage.getJsonDataString(), ReviewDto.class);
 
             reviewService.create(reviewMapper.mapFromDto(reviewDto));
         } else if (reviewMessage.getActionType() == MessageActionType.UPDATE) {
-            ReviewDto reviewDto =
-                    objectMapper.readValue(reviewMessage.getJsonDataString(), ReviewDto.class);
+            ReviewDto reviewDto = objectMapper.readValue(reviewMessage.getJsonDataString(), ReviewDto.class);
             ReviewPutDto reviewPutDto = new ReviewPutDto();
             reviewPutDto.setReview(reviewDto.getReview());
             reviewPutDto.setStars(reviewDto.getStars());

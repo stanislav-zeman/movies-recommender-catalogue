@@ -115,14 +115,18 @@ services:
     image: rabbitmq:3-management
     restart: unless-stopped
     hostname: cere.dev
-    environment:
-      RABBITMQ_DEFAULT_USER: playboy
-      RABBITMQ_DEFAULT_PASS: hugh-hefner
     profiles: [ all, dependencies, content, recommendations, reviews ]
     ports:
       - "5672:5672"   # amqp
       - "15672:15672" # http
       - "15692:15692" # http/promethus
+    volumes:
+      - type: bind
+        source: ./config/rabbitmq/rabbitmq.conf
+        target: /etc/rabbitmq/rabbitmq.conf
+      - type: bind
+        source: ./config/rabbitmq/definitions.json
+        target: /etc/rabbitmq/definitions.json
     networks: [ movies ]
     healthcheck:
       test: rabbitmq-diagnostics -q ping

@@ -29,25 +29,4 @@ public class ServiceConfig {
     public ServiceConfig(AmqpAdmin rabbitAdmin) {
         this.rabbitAdmin = rabbitAdmin;
     }
-
-    public void declareQueue() {
-        boolean durable = true;
-        boolean exclusive = false;
-        boolean autoDelete = false;
-
-        String queue =
-                rabbitAdmin.declareQueue(new Queue(queueName, durable, exclusive, autoDelete));
-
-        DirectExchange exchange = new DirectExchange(queueExchange, durable, autoDelete);
-
-        rabbitAdmin.declareExchange(exchange);
-
-        Binding.DestinationType destinationType = Binding.DestinationType.QUEUE;
-        Map<String, Object> arguments = null;
-
-        Binding binding =
-                new Binding(queue, destinationType, queueExchange, queueRoutingKey, arguments);
-
-        rabbitAdmin.declareBinding(binding);
-    }
 }
